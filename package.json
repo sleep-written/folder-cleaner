@@ -1,0 +1,18 @@
+{
+  "type": "module",
+  "scripts": {
+    "test": "clear && ava",
+    "clean": "rm -rf ./dist",
+    "build": "node --run clean && bb-path-alias build ./tsconfig.build.json",
+    "start": "bb-path-alias start ./src/index.ts"
+  },
+  "devDependencies": {
+    "@bleed-believer/path-alias": "^2.3.2",
+    "@types/node": "^24.2.1",
+    "ava": "^6.4.1",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "decimal.js": "^10.6.0"
+  }
+}
