@@ -2,7 +2,8 @@ import type { RmOptions } from 'fs';
 
 import { readdir, rm, stat } from 'fs/promises';
 import { resolve } from 'path';
-import { Byte } from './byte.js';
+
+import { Byte } from '@utils/byte/index.js';
 
 export interface ReaddirOptions {
     recursive?: boolean;
