@@ -1,13 +1,17 @@
-import type { FileFromFolderInjector, FileInjector, RmFunction, Stats } from './interfaces/index.js';
+import type { FileFromFolderOptions, FileFromFolderInjector, FileInjector, RmFunction, Stats } from './interfaces/index.js';
 
 import { readdir, rm, stat } from 'fs/promises';
-import { resolve } from 'path';
+import { extname, resolve } from 'path';
 import { homedir } from 'os';
 
 import { Byte } from '@utils/byte/index.js';
 
 export class File {
-    static async fromFolder(path: string, inject?: FileFromFolderInjector): Promise<File[]> {
+    static async fromFolder(
+        path: string,
+        options?: FileFromFolderOptions,
+        inject?: FileFromFolderInjector
+    ): Promise<File[]> {
         if (/^~(?=(\\|\/))/.test(path)) {
             path = path.replace(/^~(?=(\\|\/))/, homedir());
         }
@@ -19,10 +23,20 @@ export class File {
             withFileTypes: true
         });
 
+        const extensions = options?.extensions
+            ?.map(x => x.toLowerCase())
+            ?.map(x => !x.startsWith('.')
+                ?   '.' + x
+                :   x
+            );
+
+
+
         const files: File[] = [];
         for (const dirent of dirents) {
             // Skip this file
-            if (inject?.filter && !inject.filter(dirent)) {
+            const extension = extname(dirent.name).toLowerCase();
+            if (extensions && !extensions.includes(extension)) {
                 continue;
             }
 
@@ -31,8 +45,8 @@ export class File {
             const file = new File(path, stats, { rm: inject?.rm });
 
             // Execute a custom function every item
-            if (inject?.every) {
-                await inject.every(file);
+            if (options?.every) {
+                await options.every(file);
             }
 
             files.push(file);

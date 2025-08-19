@@ -30,14 +30,7 @@ try {
 
     let totalSize = new Byte(0);
     await File.fromFolder(params.targetDir, {
-        filter(dirent) {
-            if (params.extensions) {
-                const ext = path.extname(dirent.name).replace('.', '');
-                return params.extensions.includes(ext);
-            } else {
-                return true;
-            }
-        },
+        extensions: params.extensions,
         every(file) {
             totalSize = totalSize.add(file.size);
             display.print(p => {

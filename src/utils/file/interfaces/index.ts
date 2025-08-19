@@ -1,5 +1,6 @@
 export type { Dirent } from './dirent.js';
 export type { FileFromFolderInjector } from './file-from-folder.injector.js';
+export type { FileFromFolderOptions } from './file-from-folder.options.js';
 export type { FileInjector } from './file.injector.js';
 export type { ReaddirFunction } from './readdir.function.js';
 export type { ReaddirOptions } from './readdir.options.js';
