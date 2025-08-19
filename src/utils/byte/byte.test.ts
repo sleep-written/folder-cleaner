@@ -7,9 +7,9 @@ test('From 5 GB to 5000 MB', t => {
 
     t.is(mega.toNumber(), 5000);
     t.is(giga.toString(), '5000000000 B');
-    t.is(giga.toString({ unit: Byte.mega }), '5000 MB');
-    t.is(giga.toString({ unit: Byte.giga }), '5 GB');
-    t.is(giga.toString({ unit: Byte.giga, decimals: 2 }), '5.00 GB');
+    t.is(giga.toString({ units: Byte.mega }), '5000 MB');
+    t.is(giga.toString({ units: Byte.giga }), '5 GB');
+    t.is(giga.toString({ units: Byte.giga, decimals: 2 }), '5.00 GB');
 });
 
 test('From 5000 MB to 5 GB', t => {
@@ -18,9 +18,9 @@ test('From 5000 MB to 5 GB', t => {
 
     t.is(giga.toNumber(), 5);
     t.is(mega.toString(), '5000000000 B');
-    t.is(mega.toString({ unit: Byte.mega }), '5000 MB');
-    t.is(mega.toString({ unit: Byte.giga }), '5 GB');
-    t.is(mega.toString({ unit: Byte.giga, decimals: 2 }), '5.00 GB');
+    t.is(mega.toString({ units: Byte.mega }), '5000 MB');
+    t.is(mega.toString({ units: Byte.giga }), '5 GB');
+    t.is(mega.toString({ units: Byte.giga, decimals: 2 }), '5.00 GB');
 });
 
 test('From 2.5 GiB to 2560 MiB', t => {
@@ -29,9 +29,9 @@ test('From 2.5 GiB to 2560 MiB', t => {
 
     t.is(mib.toNumber(), 2560);
     t.is(gib.toString(), '2684354560 B');
-    t.is(gib.toString({ unit: Byte.mebi }), '2560 MiB');
-    t.is(gib.toString({ unit: Byte.gibi }), '2.5 GiB');
-    t.is(gib.toString({ unit: Byte.gibi, decimals: 2 }), '2.50 GiB');
+    t.is(gib.toString({ units: Byte.mebi }), '2560 MiB');
+    t.is(gib.toString({ units: Byte.gibi }), '2.5 GiB');
+    t.is(gib.toString({ units: Byte.gibi, decimals: 2 }), '2.50 GiB');
 });
 
 test('From 2560 MiB to 2.5 GiB', t => {
@@ -40,9 +40,9 @@ test('From 2560 MiB to 2.5 GiB', t => {
 
     t.is(gib.toNumber(), 2.5);
     t.is(mib.toString(), '2684354560 B');
-    t.is(mib.toString({ unit: Byte.mebi }), '2560 MiB');
-    t.is(mib.toString({ unit: Byte.gibi }), '2.5 GiB');
-    t.is(mib.toString({ unit: Byte.gibi, decimals: 2}), '2.50 GiB');
+    t.is(mib.toString({ units: Byte.mebi }), '2560 MiB');
+    t.is(mib.toString({ units: Byte.gibi }), '2.5 GiB');
+    t.is(mib.toString({ units: Byte.gibi, decimals: 2 }), '2.50 GiB');
 });
 
 test('Parse "2.5GiB"', t => {
@@ -50,9 +50,40 @@ test('Parse "2.5GiB"', t => {
     t.is(byte.valueOf().toNumber(), 2684354560);
 });
 
-test('Parse "2560MiB"', t => {
+test('"2560MiB" toString → "2.50 GiB" [ Byte.gibi, Byte.mebi, Byte.kibi ]', t => {
     const byte = Byte.parse('2560MiB');
     t.is(byte.valueOf().toNumber(), 2684354560);
+    t.is(
+        byte.toString({
+            units: [ Byte.gibi, Byte.mebi, Byte.kibi ],
+            decimals: 2
+        }),
+        '2.50 GiB'
+    );
+});
+
+test('"2560MiB" toString → "2.50 GiB" [ Byte.kibi, Byte.mebi, Byte.gibi ]', t => {
+    const byte = Byte.parse('2560MiB');
+    t.is(byte.valueOf().toNumber(), 2684354560);
+    t.is(
+        byte.toString({
+            units: [ Byte.kibi, Byte.mebi, Byte.gibi ],
+            decimals: 2
+        }),
+        '2.50 GiB'
+    );
+});
+
+test('"2560MiB" toString → "2.50 GiB" [ Byte.gibi, Byte.kibi, Byte.mebi ]', t => {
+    const byte = Byte.parse('2560MiB');
+    t.is(byte.valueOf().toNumber(), 2684354560);
+    t.is(
+        byte.toString({
+            units: [ Byte.gibi, Byte.kibi, Byte.mebi ],
+            decimals: 2
+        }),
+        '2.50 GiB'
+    );
 });
 
 test('Parse "2.5 GiB"', t => {

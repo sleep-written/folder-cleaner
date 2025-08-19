@@ -66,45 +66,4 @@ export class Argv {
             }
         }
     }
-
-    match(pattern: string[]): {
-        data: Record<string, string[]>;
-        tail: string[];
-    } | null {
-        if (
-            pattern.at(-1) === '...' &&
-            this.#main.length < pattern.length
-        ) {
-            return null;
-        } else if (
-            pattern.at(-1) !== '...' &&
-            this.#main.length !== pattern.length
-        ) {
-            return null;
-        }
-
-        const data: Record<string, string[]> = {};
-        const tail: string[] = [];
-
-        for (let i = 0; i < pattern.length; i++) {
-            if (pattern[i].startsWith(':')) {
-                const key = pattern[i].slice(1);
-                if (!(data[key] instanceof Array)) {
-                    data[key] = [];
-                }
-
-                data[key].push(this.#main[i]);
-
-            } else if (i === pattern.length - 1 && pattern[i] === '...') {
-                tail.push(...this.#main.slice(i));
-                break;
-
-            } else if (pattern[i] !== this.#main[i]) {
-                return null;
-
-            }
-        }
-
-        return { data, tail };
-    }
 }

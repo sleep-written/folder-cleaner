@@ -93,13 +93,19 @@ export class Byte {
 
     toString(options?: {
         decimals?: number;
-        unit?: Unit;
+        units?: Unit | Unit[];
     }): string {
-        const value = options?.unit instanceof Unit
-        ?   options.unit.to(this.#value)
-        :   this.#value;
+        const units = options?.units instanceof Unit
+        ?   [ options.units ]
+        :   options?.units ?? [];
 
-        const suffix = options?.unit?.suffix ?? 'B';
+        const unit = units
+            .sort((a, b) => a.power.toNumber() - b.power.toNumber())
+            .reverse()
+            .find(x => this.#value.greaterThanOrEqualTo(x.power));
+
+        const value = unit?.to(this.#value) ?? this.#value;
+        const suffix = unit?.suffix ?? 'B';
         return [
             value.toFixed(options?.decimals),
             suffix

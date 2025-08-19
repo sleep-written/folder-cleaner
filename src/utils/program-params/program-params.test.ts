@@ -1,6 +1,6 @@
-import type { ArgvObject } from './argv-parser.js';
+import type { ArgvObject } from './program-params.js';
 
-import { ArgvParser } from './argv-parser.js';
+import { ProgramParams } from './program-params.js';
 import { Byte } from '../byte/byte.js';
 import test from 'ava';
 
@@ -12,9 +12,9 @@ test('Capture "--limit 8MB" → OK', t => {
         }
     };
 
-    const parser = new ArgvParser(argv);
+    const parser = new ProgramParams(argv);
     t.is(
-        parser.limit.toString({ unit: Byte.mega }),
+        parser.sizeLimit.toString({ units: Byte.mega }),
         '8 MB'
     );
 });
@@ -27,10 +27,10 @@ test('Capture "--joder 8MB" → FAIL', t => {
         }
     };
 
-    const parser = new ArgvParser(argv);
+    const parser = new ProgramParams(argv);
     t.throws(
-        () => parser.limit,
-        { message: 'The flag "--limit" is required' }
+        () => parser.sizeLimit,
+        { message: 'The flag "--size-limit" or "--limit" is required' }
     );
 });
 
@@ -42,6 +42,6 @@ test('Capture "--ext js,cjs,mjs"', t => {
         }
     };
 
-    const parser = new ArgvParser(argv);
+    const parser = new ProgramParams(argv);
     t.deepEqual(parser.extensions, [ 'js', 'cjs', 'mjs' ]);
 });
