@@ -4,7 +4,7 @@
     "test": "clear && ava",
     "clean": "rm -rf ./dist",
     "build": "node --run clean && bb-path-alias build ./tsconfig.build.json",
-    "start": "bb-path-alias start ./src/index.ts"
+    "start": "clear && bb-path-alias start ./src/index.ts"
   },
   "devDependencies": {
     "@bleed-believer/path-alias": "^2.3.2",

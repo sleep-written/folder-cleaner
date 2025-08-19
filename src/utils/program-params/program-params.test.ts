@@ -14,7 +14,7 @@ test('Capture "--limit 8MB" → OK', t => {
 
     const parser = new ProgramParams(argv);
     t.is(
-        parser.sizeLimit.toString({ units: Byte.mega }),
+        parser.sizeLimit?.toString({ units: Byte.mega }),
         '8 MB'
     );
 });
@@ -28,10 +28,7 @@ test('Capture "--joder 8MB" → FAIL', t => {
     };
 
     const parser = new ProgramParams(argv);
-    t.throws(
-        () => parser.sizeLimit,
-        { message: 'The flag "--size-limit" or "--limit" is required' }
-    );
+    t.is(parser.sizeLimit, null);
 });
 
 test('Capture "--ext js,cjs,mjs"', t => {

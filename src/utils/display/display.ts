@@ -1,30 +1,95 @@
-import type { ProgramParamsObject, ConsoleObject } from './interfaces/index.js';
+import type { ProgramParamsObject, ConsoleObject, Documentation } from './interfaces/index.js';
 
 import { Paint } from './paint.js';
 import { Byte } from '@utils/byte/index.js';
-
-import chalk from 'chalk';
 
 export class Display {
     #paint = new Paint();
     #programParams: ProgramParamsObject;
     #consoleObject: ConsoleObject;
+    #documentation: Documentation[] = [
+        {
+            title: 'Extensions',
+            description: 'Only watch and delete files with this extension.',
+            flags: [ '--extensions', '--exts', '--ext' ],
+            value: o => o.extensions
+        },
+        {
+            title: 'Size Limit',
+            required: true,
+            description: [
+                'When the folder target exceeds this size, the program will deletes the oldest file.',
+                `Available sizes: ` + Byte.units
+                    .map(x => this.#paint.primitive(x.suffix))
+                    .join(', ') + '.'
+            ].join('\n'),
+            flags: [ '--size-limit', '--limit' ],
+            value: o => o.sizeLimit?.toString({
+                units: [ Byte.tera, Byte.giga, Byte.mega, Byte.kilo ],
+                decimals: 2
+            })
+        },
+        {
+            title: 'Target Folder',
+            required: true,
+            description: 'The folder do you want to watch.',
+            flags: [ '--target-dir', '--target' ],
+            value: o => o.targetDir
+        }
+    ];
 
     constructor(programParams: ProgramParamsObject, consoleObject?: ConsoleObject) {
         this.#programParams = programParams;
         this.#consoleObject = consoleObject ?? console;
     }
 
-    showCurrentValues(): void {
-        const extensions = this.#programParams.extensions;
-        const targetDir = this.#programParams.targetDir;
-        const sizeLimit = this.#programParams.sizeLimit.toString({
-            decimals: 2,
-            units: [ Byte.tera, Byte.giga, Byte.mega, Byte.kilo ]
-        });
+    showTitle(): void {
+        const title = this.#paint.title(`folder-cleaner`);
+        this.#consoleObject.log(`${title}`);
+    }
 
-        this.#consoleObject.log(chalk.grey(`--extensions:`), this.#paint.primitive(extensions));
-        this.#consoleObject.log(chalk.grey(`--size-limit:`), this.#paint.primitive(sizeLimit));
-        this.#consoleObject.log(chalk.grey(`--target-dir:`), this.#paint.primitive(targetDir));
+    showCurrentValues(): void {
+        for (const item of this.#documentation) {
+            this.#consoleObject.log(
+                this.#paint.subtitle(item.title) + (
+                    item.required
+                    ?   ' (required):'
+                    :   ':'
+                )
+            );
+
+            this.#consoleObject.log(item.description);
+            this.#consoleObject.log(
+                'Command flags:',
+                item.flags
+                    .map(x => this.#paint.flag(x))
+                    .join(' / ')
+            );
+
+            const value = item.value(this.#programParams);
+            this.#consoleObject.log(
+                'Current value:',
+                this.#paint.primitive(value),
+                '\n'
+            );
+        }
+    }
+
+    print(value: string | ((p: Paint) => any)): void {
+        const result = typeof value === 'function'
+        ?   value(this.#paint)
+        :   value;
+
+        this.#consoleObject.log(result);
+    }
+
+    showSeparator(): void {
+        const text = ''.padStart(75, '-');
+        this.#consoleObject.log(this.#paint.separator(text));
+    }
+
+    showError(err: any) {
+        this.#consoleObject.log(this.#paint.errorTitle('APPLICATION ERROR') + ':');
+        this.#consoleObject.log(err?.message ?? 'Error not identified');
     }
 }

@@ -24,37 +24,33 @@ export class ProgramParams {
         return this.#extensions;
     }
 
-    #sizeLimit?: Byte;
-    get sizeLimit(): Byte {
+    #sizeLimit?: Byte | null;
+    get sizeLimit(): Byte | null {
         if (!(this.#sizeLimit instanceof Byte)) {
             const text = this.#getFlagsValues(
                 '--size-limit',
                 '--limit'
             )?.[0];
 
-            if (typeof text !== 'string') {
-                throw new Error('The flag "--size-limit" or "--limit" is required');
-            } else {
-                this.#sizeLimit = Byte.parse(text);
-            }
+            this.#sizeLimit = typeof text === 'string'
+            ?   Byte.parse(text)
+            :   null;
         }
 
         return this.#sizeLimit;
     }
 
-    #targetDir?: string;
-    get targetDir(): string {
+    #targetDir?: string | null;
+    get targetDir(): string | null {
         if (typeof this.#targetDir !== 'string') {
             const text = this.#getFlagsValues(
                 '--target-dir',
                 '--target'
             )?.[0];
 
-            if (typeof text !== 'string') {
-                throw new Error('The flag "--target-dir" or "--target" is required');
-            } else {
-                this.#targetDir = text;
-            }
+            this.#targetDir = typeof text === 'string'
+            ?   text
+            :   null;
         }
 
         return this.#targetDir;

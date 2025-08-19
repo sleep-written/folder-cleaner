@@ -2,25 +2,46 @@ import type { FileFromFolderInjector, FileInjector, RmFunction, Stats } from './
 
 import { readdir, rm, stat } from 'fs/promises';
 import { resolve } from 'path';
+import { homedir } from 'os';
+
 import { Byte } from '@utils/byte/index.js';
 
 export class File {
-    static async fromFolder(path: string, recursive?: boolean, inject?: FileFromFolderInjector): Promise<File[]> {
-        const readdirFn = inject?.readdir ?? readdir;
-        const statFn = inject?.stat ?? stat;
-        const dir = await readdirFn(path, { recursive, withFileTypes: true });
-        const r = dir
-            .filter(x => x.isFile())
-            .map(async x => {
-                const path = resolve(x.parentPath, x.name);
-                const stats = await statFn(path, { bigint: true });
-                return new File(path, stats, inject);
-            });
+    static async fromFolder(path: string, inject?: FileFromFolderInjector): Promise<File[]> {
+        if (/^~(?=(\\|\/))/.test(path)) {
+            path = path.replace(/^~(?=(\\|\/))/, homedir());
+        }
 
-        return Promise.all(r);
+        const readdirFunction = inject?.readdir ?? readdir;
+        const statFunction = inject?.stat ?? stat;
+        const dirents = await readdirFunction(path, {
+            recursive: true,
+            withFileTypes: true
+        });
+
+        const files: File[] = [];
+        for (const dirent of dirents) {
+            // Skip this file
+            if (inject?.filter && !inject.filter(dirent)) {
+                continue;
+            }
+
+            const path = resolve(dirent.parentPath, dirent.name);
+            const stats = await statFunction(path, { bigint: true });
+            const file = new File(path, stats, { rm: inject?.rm });
+
+            // Execute a custom function every item
+            if (inject?.every) {
+                await inject.every(file);
+            }
+
+            files.push(file);
+        }
+
+        return files;
     }
 
-    #rmFn: RmFunction;
+    #rmFunction: RmFunction;
 
     #path: string;
     get path(): string {
@@ -38,7 +59,7 @@ export class File {
     }
 
     constructor(path: string, stats: Stats, injector?: FileInjector) {
-        this.#rmFn = injector?.rm ?? rm;
+        this.#rmFunction = injector?.rm ?? rm;
 
         this.#path = path;
         this.#size = new Byte(stats.size);
@@ -46,6 +67,6 @@ export class File {
     }
 
     async kill(force?: boolean): Promise<void> {
-        return this.#rmFn(this.#path, { force });
+        return this.#rmFunction(this.#path, { force });
     }
 }

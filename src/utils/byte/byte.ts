@@ -22,6 +22,10 @@ export class Byte {
     static get gibi(): Unit { return byteUnits.gibi; }
     static get tebi(): Unit { return byteUnits.tebi; }
 
+    static get units(): Unit[] {
+        return Object.values(byteUnits);
+    }
+
     static parse(input: string, ignoreCase?: boolean): Byte {
         const regex = /^(?<value>-?\d+(\.\d+)?)\s*(?<suffix>[a-z]+)$/i;
         const groups = regex.exec(input)?.groups as {
@@ -110,5 +114,16 @@ export class Byte {
             value.toFixed(options?.decimals),
             suffix
         ].join(' ');
+    }
+
+    add(...bytes: Byte[]): Byte {
+        const value = bytes
+            .map(x => x.#value)
+            .reduce(
+                (prev, curr) => curr.add(prev),
+                this.#value
+            );
+
+        return new Byte(value);
     }
 }

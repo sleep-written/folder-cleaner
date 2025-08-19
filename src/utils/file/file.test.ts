@@ -1,4 +1,4 @@
-import type { Dirent, FileFromFolderInjector, Stats } from './file.js';
+import type { Dirent, FileFromFolderInjector, Stats } from './interfaces/index.js';
 
 import { File } from './file.js';
 import test from 'ava';
@@ -56,7 +56,7 @@ test('Get current folder', async t => {
         rm: () => Promise.resolve()
     }
 
-    const [ file1, file2, file3 ] = await File.fromFolder('./src', true, inject);
+    const [ file1, file2, file3 ] = await File.fromFolder('./src', inject);
 
     t.is(file1.path, '/path/to/project/pendejo.ts');
     t.is(file1.size.toString(), '2048 B');
