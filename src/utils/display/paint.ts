@@ -30,7 +30,7 @@ export class Paint {
             }
 
             case value === true: {
-                return chalk.blue(value);
+                return chalk.blueBright(value);
             }
 
             case value === false: {

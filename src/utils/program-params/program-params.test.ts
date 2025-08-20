@@ -42,3 +42,27 @@ test('Capture "--ext js,cjs,mjs"', t => {
     const parser = new ProgramParams(argv);
     t.deepEqual(parser.extensions, [ 'js', 'cjs', 'mjs' ]);
 });
+
+test('Capture "--execute" → true', t => {
+    const argv: ArgvObject = {
+        main: [],
+        flags: {
+            '--execute': []
+        }
+    };
+
+    const parser = new ProgramParams(argv);
+    t.true(parser.execute);
+});
+
+test('Capture "--execute" → false', t => {
+    const argv: ArgvObject = {
+        main: [],
+        flags: {
+            '--jajaja': []
+        }
+    };
+
+    const parser = new ProgramParams(argv);
+    t.false(parser.execute);
+});

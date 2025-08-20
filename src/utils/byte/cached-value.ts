@@ -13,12 +13,4 @@ export class CachedValue<T> {
 
         return this.#cache;
     }
-
-    async getAsync(): Promise<T> {
-        if (typeof this.#cache === 'undefined') {
-            this.#cache = await this.#callback();
-        }
-
-        return this.#cache;
-    }
 }

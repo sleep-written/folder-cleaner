@@ -1,5 +1,6 @@
 import { Byte } from '@utils/byte/index.js';
 import { Argv } from '../argv/index.js';
+import { homedir } from 'os';
 
 export interface ArgvObject {
     main: string[];
@@ -40,6 +41,18 @@ export class ProgramParams {
         return this.#sizeLimit;
     }
 
+    #execute?: boolean | null;
+    get execute(): boolean | null {
+        if (typeof this.#execute !== 'boolean') {
+            const keys = Object.keys(this.#argv.flags);
+            this.#execute = [ '--execute', '--exec' ].some(x => 
+                keys.includes(x)
+            );
+        }
+
+        return this.#execute;
+    }
+
     #targetDir?: string | null;
     get targetDir(): string | null {
         if (typeof this.#targetDir !== 'string') {
@@ -48,9 +61,14 @@ export class ProgramParams {
                 '--target'
             )?.[0];
 
-            this.#targetDir = typeof text === 'string'
-            ?   text
-            :   null;
+            if (typeof text === 'string') {
+                const homeRegex = /^~(?=(\\|\/))/;
+                this.#targetDir = homeRegex.test(text)
+                ?   text.replace(homeRegex, homedir())
+                :   text;
+            } else {
+                this.#targetDir = null;
+            }
         }
 
         return this.#targetDir;

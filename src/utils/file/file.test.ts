@@ -24,32 +24,60 @@ test('Get current folder', async t => {
         ]),
         stat: (path: string): Promise<Stats> => {
             switch (path) {
+                case './src': {
+                    const birthtime = new Date(2020, 0, 1);
+                    return Promise.resolve({
+                        isDirectory: () => true,
+                        isFile: () => false,
+                        size: 4090,
+                        atime: birthtime,
+                        mtime: birthtime,
+                        ctime: birthtime,
+                        birthtime,
+                    });
+                }
+
                 case '/path/to/project/pendejo.ts': {
                     const birthtime = new Date(2025, 8, 1);
                     return Promise.resolve({
+                        isDirectory: () => false,
+                        isFile: () => true,
                         size: 2048,
-                        birthtime
+                        atime: birthtime,
+                        mtime: birthtime,
+                        ctime: birthtime,
+                        birthtime,
                     });
                 }
 
                 case '/path/to/project/joder.ts': {
                     const birthtime = new Date(2025, 8, 2);
                     return Promise.resolve({
+                        isDirectory: () => false,
+                        isFile: () => true,
                         size: 3516,
-                        birthtime
+                        atime: birthtime,
+                        mtime: birthtime,
+                        ctime: birthtime,
+                        birthtime,
                     });
                 }
 
                 case '/path/to/project/chaval.ts': {
                     const birthtime = new Date(2025, 8, 3);
                     return Promise.resolve({
+                        isDirectory: () => false,
+                        isFile: () => true,
                         size: 4444,
-                        birthtime
+                        birthtime,
+                        atime: birthtime,
+                        mtime: birthtime,
+                        ctime: birthtime,
                     });
                 }
 
                 default: {
-                    throw new Error('File not found');
+                    throw new Error('Path not found');
                 }
             }
         },

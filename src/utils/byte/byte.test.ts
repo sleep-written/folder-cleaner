@@ -132,3 +132,25 @@ test('Parse "5GB 🍆" and fails', t => {
         }
     );
 });
+
+test('5B + 3B = 8B', t => {
+    const a = new Byte(5);
+    const b = new Byte(3);
+    const r = a.add(b);
+    t.is(r.valueOf().toNumber(), 8);
+});
+
+test('5B - 3B = 2B', t => {
+    const a = new Byte(5);
+    const b = new Byte(3);
+    const r = a.minus(b);
+    t.is(r.valueOf().toNumber(), 2);
+});
+
+test('5B - 1B - 2B = 2B', t => {
+    const a = new Byte(5);
+    const b = new Byte(1);
+    const c = new Byte(2);
+    const r = a.minus(b, c);
+    t.is(r.valueOf().toNumber(), 2);
+});

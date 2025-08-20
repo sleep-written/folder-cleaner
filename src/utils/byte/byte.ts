@@ -27,6 +27,8 @@ export class Byte {
     }
 
     static parse(input: string, ignoreCase?: boolean): Byte {
+        input = input.trim();
+
         const regex = /^(?<value>-?\d+(\.\d+)?)\s*(?<suffix>[a-z]+)$/i;
         const groups = regex.exec(input)?.groups as {
             value: string;
@@ -116,7 +118,7 @@ export class Byte {
         ].join(' ');
     }
 
-    add(...bytes: Byte[]): Byte {
+    add(...bytes: [ Byte, ...Byte[] ]): Byte {
         const value = bytes
             .map(x => x.#value)
             .reduce(
@@ -125,5 +127,32 @@ export class Byte {
             );
 
         return new Byte(value);
+    }
+
+    minus(...bytes: [ Byte, ...Byte[] ]): Byte {
+        const value = bytes
+            .map(x => x.#value)
+            .reduce(
+                (prev, curr) => prev.minus(curr),
+                this.#value
+            );
+
+        return new Byte(value);
+    }
+
+    lessThan(byte: Byte): boolean {
+        return this.#value.lessThan(byte.#value);
+    }
+
+    lessThanOrEqualTo(byte: Byte): boolean {
+        return this.#value.lessThanOrEqualTo(byte.#value);
+    }
+
+    greaterThan(byte: Byte): boolean {
+        return this.#value.greaterThan(byte.#value);
+    }
+
+    greaterThanOrEqualTo(byte: Byte): boolean {
+        return this.#value.greaterThanOrEqualTo(byte.#value);
     }
 }

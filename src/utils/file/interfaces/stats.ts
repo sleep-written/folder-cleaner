@@ -4,8 +4,11 @@ export interface Stats {
     // mtimeMs: number | bigint;
     // ctimeMs: number | bigint;
     // birthtimeMs: number | bigint;
-    // atime: Date;
-    // mtime: Date;
-    // ctime: Date;
+    atime: Date;
+    mtime: Date;
+    ctime: Date;
     birthtime: Date;
+
+    isFile(): boolean;
+    isDirectory(): boolean;
 }

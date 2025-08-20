@@ -1,7 +1,7 @@
 import type { FileFromFolderOptions, FileFromFolderInjector, FileInjector, RmFunction, Stats } from './interfaces/index.js';
 
 import { readdir, rm, stat } from 'fs/promises';
-import { extname, resolve } from 'path';
+import { basename, extname, resolve } from 'path';
 import { homedir } from 'os';
 
 import { Byte } from '@utils/byte/index.js';
@@ -12,8 +12,9 @@ export class File {
         options?: FileFromFolderOptions,
         inject?: FileFromFolderInjector
     ): Promise<File[]> {
-        if (/^~(?=(\\|\/))/.test(path)) {
-            path = path.replace(/^~(?=(\\|\/))/, homedir());
+        const homeRegex = /^~(?=(\\|\/))/;
+        if (homeRegex.test(path)) {
+            path = path.replace(homeRegex, homedir());
         }
 
         const readdirFunction = inject?.readdir ?? readdir;
@@ -30,10 +31,13 @@ export class File {
                 :   x
             );
 
-
+        const statFolder = await statFunction(path);
+        if (!statFolder.isDirectory()) {
+            throw new Error(`The path "${path}" must be a directory`);
+        }
 
         const files: File[] = [];
-        for (const dirent of dirents) {
+        for (const dirent of dirents.filter(x => x.isFile())) {
             // Skip this file
             const extension = extname(dirent.name).toLowerCase();
             if (extensions && !extensions.includes(extension)) {
@@ -62,9 +66,32 @@ export class File {
         return this.#path;
     }
 
+    get filename(): string {
+        return basename(this.#path);
+    }
+
+    get extension(): string {
+        return extname(this.#path);
+    }
+
     #size: Byte;
     get size(): Byte {
         return this.#size;
+    }
+
+    #atime: Date;
+    get atime(): Date {
+        return this.#atime;
+    }
+
+    #mtime: Date;
+    get mtime(): Date {
+        return this.#mtime;
+    }
+
+    #ctime: Date;
+    get ctime(): Date {
+        return this.#ctime;
     }
 
     #birthDate: Date;
@@ -77,10 +104,13 @@ export class File {
 
         this.#path = path;
         this.#size = new Byte(stats.size);
+        this.#atime = stats.atime;
+        this.#mtime = stats.mtime;
+        this.#ctime = stats.ctime;
         this.#birthDate = stats.birthtime;
     }
 
     async kill(force?: boolean): Promise<void> {
-        return this.#rmFunction(this.#path, { force });
+        return this.#rmFunction(this.#path, { force: !!force });
     }
 }

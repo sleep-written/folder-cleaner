@@ -35,6 +35,17 @@ export class Display {
             description: 'The folder do you want to watch.',
             flags: [ '--target-dir', '--target' ],
             value: o => o.targetDir
+        },
+        {
+            title: 'Execute process',
+            required: true,
+            description: [
+                'If this flag is present, the CLI will delete the files that',
+                'exceeds the size limit setled. Otherwise, only shows the files',
+                'without deleting them.'
+            ].join('\n'),
+            flags: [ '--execute', '--exec' ],
+            value: o => o.execute
         }
     ];
 
@@ -49,7 +60,14 @@ export class Display {
     }
 
     showCurrentValues(): void {
+        let lineSkip = false;
         for (const item of this.#documentation) {
+            if (lineSkip) {
+                this.#consoleObject.log('');
+            } else {
+                lineSkip = true;
+            }
+
             this.#consoleObject.log(
                 this.#paint.subtitle(item.title) + (
                     item.required
@@ -69,8 +87,7 @@ export class Display {
             const value = item.value(this.#programParams);
             this.#consoleObject.log(
                 'Current value:',
-                this.#paint.primitive(value),
-                '\n'
+                this.#paint.primitive(value)
             );
         }
     }
