@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Byte } from './byte.js';
+import { Byte } from './byte.ts';
 
 test('From 5 GB to 5000 MB', t => {
     const giga = new Byte(5, Byte.giga);

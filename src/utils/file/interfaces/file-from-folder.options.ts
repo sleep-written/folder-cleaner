@@ -1,4 +1,4 @@
-import type { File } from '../file.js';
+import type { File } from '../file.ts';
 
 export interface FileFromFolderOptions {
     extensions?: string[] | null;

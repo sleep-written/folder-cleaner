@@ -1,1 +1,1 @@
-export { File } from './file.js';
+export { File } from './file.ts';

@@ -1,6 +1,6 @@
-import type { Dirent, FileFromFolderInjector, Stats } from './interfaces/index.js';
+import type { Dirent, FileFromFolderInjector, Stats } from './interfaces/index.ts';
 
-import { File } from './file.js';
+import { File } from './file.ts';
 import test from 'ava';
 
 test('Get current folder', async t => {

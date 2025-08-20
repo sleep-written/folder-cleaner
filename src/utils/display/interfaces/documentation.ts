@@ -1,4 +1,4 @@
-import type { ProgramParamsObject } from './program-params.object.js';
+import type { ProgramParamsObject } from './program-params.object.ts';
 
 export interface Documentation {
     title: string;

@@ -1,2 +1,2 @@
-export { Display } from './display.js';
-export type * from './interfaces/index.js';
+export { Display } from './display.ts';
+export type * from './interfaces/index.ts';

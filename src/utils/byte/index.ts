@@ -1,3 +1,3 @@
-export { Byte } from './byte.js';
-export type { Unit } from './unit.js';
+export { Byte } from './byte.ts';
+export type { Unit } from './unit.ts';
 

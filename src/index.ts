@@ -1,7 +1,7 @@
-import { ProgramParams } from '@utils/program-params/index.js';
-import { Display } from '@utils/display/index.js';
-import { Byte } from '@utils/byte/index.js';
-import { File } from '@utils/file/index.js';
+import { ProgramParams } from '@utils/program-params/index.ts';
+import { Display } from '@utils/display/index.ts';
+import { Byte } from '@utils/byte/index.ts';
+import { File } from '@utils/file/index.ts';
 
 import chalk from 'chalk';
 
@@ -64,10 +64,18 @@ try {
 
     for (const file of filteredFiles) {
         display.print(p => {
-            const relativePath = file.path.replace(params.targetDir!, '');
+            const size = file.size.toString({
+                units: [ Byte.giga, Byte.mega, Byte.kilo ],
+                decimals: 2
+            });
+
+            const sizeSeparator = ''
+                .padStart(10 - size.length, ' ');
+
             return [
-                `birthdate: ${p.primitive(file.birthDate.toDateString())};`,
-                `path: ${p.primitive(relativePath)}`
+                `Birth: ${p.primitive(file.birthDate.toJSON())};`,
+                `Size: ${sizeSeparator}${p.primitive(size)};`,
+                `File: ${p.primitive(file.filename)}`
             ].join(' ');
         });
 
@@ -85,8 +93,8 @@ try {
         return `Total size: ${p.primitive(totalSizeString)}`
     });
 
-} catch (err: any) {
+} catch (err) {
     display.print('');
-    display.showError(err);
+    display.showError(err as Error);
 
 }

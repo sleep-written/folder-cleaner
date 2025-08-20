@@ -1,10 +1,10 @@
-import type { FileFromFolderOptions, FileFromFolderInjector, FileInjector, RmFunction, Stats } from './interfaces/index.js';
+import type { FileFromFolderOptions, FileFromFolderInjector, FileInjector, RmFunction, Stats } from './interfaces/index.ts';
 
-import { readdir, rm, stat } from 'fs/promises';
-import { basename, extname, resolve } from 'path';
-import { homedir } from 'os';
+import { basename, extname, resolve } from 'node:path';
+import { readdir, rm, stat } from 'node:fs/promises';
+import { homedir } from 'node:os';
 
-import { Byte } from '@utils/byte/index.js';
+import { Byte } from '@utils/byte/index.ts';
 
 export class File {
     static async fromFolder(
@@ -110,7 +110,7 @@ export class File {
         this.#birthDate = stats.birthtime;
     }
 
-    async kill(force?: boolean): Promise<void> {
+    kill(force?: boolean): Promise<void> {
         return this.#rmFunction(this.#path, { force: !!force });
     }
 }

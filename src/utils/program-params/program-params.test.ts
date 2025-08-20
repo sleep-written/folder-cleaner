@@ -1,7 +1,7 @@
-import type { ArgvObject } from './program-params.js';
+import type { ArgvObject } from './program-params.ts';
 
-import { ProgramParams } from './program-params.js';
-import { Byte } from '../byte/byte.js';
+import { ProgramParams } from './program-params.ts';
+import { Byte } from '../byte/byte.ts';
 import test from 'ava';
 
 test('Capture "--limit 8MB" → OK', t => {

@@ -1,6 +1,6 @@
-import { Byte } from '@utils/byte/index.js';
-import { Argv } from '../argv/index.js';
-import { homedir } from 'os';
+import { Byte } from '@utils/byte/index.ts';
+import { Argv } from '../argv/index.ts';
+import { homedir } from 'node:os';
 
 export interface ArgvObject {
     main: string[];

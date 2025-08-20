@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Argv } from './argv.js';
+import { Argv } from './argv.ts';
 
 test('Check "hello world"', t => {
     const argv = new Argv({

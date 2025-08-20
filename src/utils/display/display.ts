@@ -1,7 +1,7 @@
-import type { ProgramParamsObject, ConsoleObject, Documentation } from './interfaces/index.js';
+import type { ProgramParamsObject, ConsoleObject, Documentation } from './interfaces/index.ts';
 
-import { Paint } from './paint.js';
-import { Byte } from '@utils/byte/index.js';
+import { Paint } from './paint.ts';
+import { Byte } from '@utils/byte/index.ts';
 
 export class Display {
     #paint = new Paint();
@@ -40,9 +40,8 @@ export class Display {
             title: 'Execute process',
             required: true,
             description: [
-                'If this flag is present, the CLI will delete the files that',
-                'exceeds the size limit setled. Otherwise, only shows the files',
-                'without deleting them.'
+                'If this flag is present, the CLI will delete the files that exceeds the size limit',
+                'setled. Otherwise, only shows the files without deleting them.'
             ].join('\n'),
             flags: [ '--execute', '--exec' ],
             value: o => o.execute
@@ -92,7 +91,7 @@ export class Display {
         }
     }
 
-    print(value: string | ((p: Paint) => any)): void {
+    print(value: string | ((p: Paint) => string)): void {
         const result = typeof value === 'function'
         ?   value(this.#paint)
         :   value;
@@ -105,7 +104,7 @@ export class Display {
         this.#consoleObject.log(this.#paint.separator(text));
     }
 
-    showError(err: any) {
+    showError(err: Error) {
         this.#consoleObject.log(this.#paint.errorTitle('APPLICATION ERROR') + ':');
         this.#consoleObject.log(err?.message ?? 'Error not identified');
     }

@@ -1,5 +1,5 @@
 import { Decimal } from 'decimal.js';
-import { CachedValue } from './cached-value.js';
+import { CachedValue } from './cached-value.ts';
 
 export class Unit {
     #name: string;

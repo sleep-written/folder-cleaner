@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Unit } from './unit.js';
+import { Unit } from './unit.ts';
 
 test('1536n → 1.5', t => {
     const unit = new Unit('kilo de pendejos', 'kPe', 1024, 1);

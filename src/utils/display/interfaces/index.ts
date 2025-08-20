@@ -1,3 +1,3 @@
-export type { ProgramParamsObject } from './program-params.object.js';
-export type { ConsoleObject } from './console.object.js';
-export type { Documentation } from './documentation.js';
+export type { ProgramParamsObject } from './program-params.object.ts';
+export type { ConsoleObject } from './console.object.ts';
+export type { Documentation } from './documentation.ts';

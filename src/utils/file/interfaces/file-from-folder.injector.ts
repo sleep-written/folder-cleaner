@@ -1,6 +1,6 @@
-import type { ReaddirFunction } from './readdir.function.js';
-import type { FileInjector } from './file.injector.js';
-import type { StatFunction } from './stat.function.js';
+import type { ReaddirFunction } from './readdir.function.ts';
+import type { FileInjector } from './file.injector.ts';
+import type { StatFunction } from './stat.function.ts';
 
 export interface FileFromFolderInjector extends FileInjector {
     readdir?: ReaddirFunction;

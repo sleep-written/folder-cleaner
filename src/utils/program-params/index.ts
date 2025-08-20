@@ -1,1 +1,1 @@
-export { ProgramParams } from './program-params.js';
+export { ProgramParams } from './program-params.ts';

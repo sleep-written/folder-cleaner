@@ -1,4 +1,4 @@
-import type { Byte } from '@utils/byte/index.js';
+import type { Byte } from '@utils/byte/index.ts';
 
 export interface ProgramParamsObject {
     execute: boolean | null;

@@ -1,5 +1,5 @@
 import { Decimal } from 'decimal.js';
-import { Unit } from './unit.js';
+import { Unit } from './unit.ts';
 
 const byteUnits = {
     kilo: new Unit('kilobyte', 'kB',  1000, 1),

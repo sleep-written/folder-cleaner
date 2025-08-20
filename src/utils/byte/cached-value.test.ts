@@ -1,5 +1,5 @@
 import test from 'ava';
-import { CachedValue } from './cached-value.js';
+import { CachedValue } from './cached-value.ts';
 
 test('Get calc result 5 times, execute once', t => {
     let count = 0;

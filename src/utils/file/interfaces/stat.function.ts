@@ -1,4 +1,4 @@
-import type { StatOptions } from './stat.options.js';
-import type { Stats } from './stats.js';
+import type { StatOptions } from './stat.options.ts';
+import type { Stats } from './stats.ts';
 
 export type StatFunction = (path: string, options?: StatOptions) => Promise<Stats>;

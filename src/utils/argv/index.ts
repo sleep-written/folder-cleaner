@@ -1,1 +1,1 @@
-export { Argv } from './argv.js';
+export { Argv } from './argv.ts';
