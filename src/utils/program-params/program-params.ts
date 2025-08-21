@@ -1,6 +1,8 @@
-import { Byte } from '@utils/byte/index.ts';
-import { Argv } from '../argv/index.ts';
 import { homedir } from 'node:os';
+import chalk from "chalk";
+
+import { Argv } from '../argv/index.ts';
+import { Byte } from '@utils/byte/index.ts';
 
 export interface ArgvObject {
     main: string[];
@@ -25,17 +27,19 @@ export class ProgramParams {
         return this.#extensions;
     }
 
-    #sizeLimit?: Byte | null;
-    get sizeLimit(): Byte | null {
+    #sizeLimit?: Byte;
+    get sizeLimit(): Byte {
         if (!(this.#sizeLimit instanceof Byte)) {
             const text = this.#getFlagsValues(
                 '--size-limit',
                 '--limit'
             )?.[0];
 
-            this.#sizeLimit = typeof text === 'string'
-            ?   Byte.parse(text)
-            :   null;
+            if (typeof text !== 'string') {
+                throw new Error(`The parameter ${chalk.underline('"Size Limit"')} is required`);
+            }
+            
+            this.#sizeLimit = Byte.parse(text);
         }
 
         return this.#sizeLimit;
@@ -53,22 +57,22 @@ export class ProgramParams {
         return this.#execute;
     }
 
-    #targetDir?: string | null;
-    get targetDir(): string | null {
+    #targetDir?: string;
+    get targetDir(): string {
         if (typeof this.#targetDir !== 'string') {
             const text = this.#getFlagsValues(
                 '--target-dir',
                 '--target'
             )?.[0];
 
-            if (typeof text === 'string') {
-                const homeRegex = /^~(?=(\\|\/))/;
-                this.#targetDir = homeRegex.test(text)
-                ?   text.replace(homeRegex, homedir())
-                :   text;
-            } else {
-                this.#targetDir = null;
+            if (typeof text !== 'string') {
+                throw new Error(`The parameter ${chalk.underline('"Target Folder"')} is required`);
             }
+            
+            const homeRegex = /^~(?=(\\|\/))/;
+            this.#targetDir = homeRegex.test(text)
+            ?   text.replace(homeRegex, homedir())
+            :   text;
         }
 
         return this.#targetDir;

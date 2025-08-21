@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import type { ProgramParamsObject, ConsoleObject, Documentation } from './interfaces/index.ts';
 
 import { Paint } from './paint.ts';
@@ -9,10 +10,11 @@ export class Display {
     #consoleObject: ConsoleObject;
     #documentation: Documentation[] = [
         {
-            title: 'Extensions',
-            description: 'Only watch and delete files with this extension.',
-            flags: [ '--extensions', '--exts', '--ext' ],
-            value: o => o.extensions
+            title: 'Target Folder',
+            required: true,
+            description: 'The folder do you want to watch.',
+            flags: [ '--target-dir', '--target' ],
+            value: o => o.targetDir
         },
         {
             title: 'Size Limit',
@@ -24,17 +26,16 @@ export class Display {
                     .join(', ') + '.'
             ].join('\n'),
             flags: [ '--size-limit', '--limit' ],
-            value: o => o.sizeLimit?.toString({
+            value: o => o.sizeLimit.toString({
                 units: [ Byte.tera, Byte.giga, Byte.mega, Byte.kilo ],
                 decimals: 2
             })
         },
         {
-            title: 'Target Folder',
-            required: true,
-            description: 'The folder do you want to watch.',
-            flags: [ '--target-dir', '--target' ],
-            value: o => o.targetDir
+            title: 'Extensions',
+            description: 'Only watch and delete files with this extension.',
+            flags: [ '--extensions', '--exts', '--ext' ],
+            value: o => o.extensions
         },
         {
             title: 'Execute process',
@@ -102,6 +103,10 @@ export class Display {
     showSeparator(): void {
         const text = ''.padStart(75, '-');
         this.#consoleObject.log(this.#paint.separator(text));
+    }
+
+    showCompleted(): void {
+        this.#consoleObject.log(chalk.greenBright('COMPLETED!'));
     }
 
     showError(err: Error) {

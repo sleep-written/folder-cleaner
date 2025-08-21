@@ -45,15 +45,16 @@ export class File {
             }
 
             const path = resolve(dirent.parentPath, dirent.name);
-            const stats = await statFunction(path, { bigint: true });
-            const file = new File(path, stats, { rm: inject?.rm });
+            const stats = await statFunction(path, { bigint: true }).catch(_ => null);
 
-            // Execute a custom function every item
-            if (options?.every) {
-                await options.every(file);
+            if (stats) {
+                const file = new File(path, stats, { rm: inject?.rm });
+                if (options?.every) {
+                    await options.every(file);
+                }
+
+                files.push(file);
             }
-
-            files.push(file);
         }
 
         return files;

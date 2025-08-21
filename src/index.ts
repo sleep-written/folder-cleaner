@@ -3,8 +3,6 @@ import { Display } from '@utils/display/index.ts';
 import { Byte } from '@utils/byte/index.ts';
 import { File } from '@utils/file/index.ts';
 
-import chalk from 'chalk';
-
 const params = new ProgramParams();
 const display = new Display(params);
 
@@ -14,53 +12,40 @@ try {
     display.showCurrentValues();
 
     display.showSeparator();
-    display.print('Checking requeriments...');
-
-    if (params.sizeLimit == null) {
-        throw new Error(`The parameter ${chalk.underline('"Size Limit"')} is required`);
-    } else {
-        display.print(`→ The parameter ${chalk.underline('"Size Limit"')} is setled.`);
-    }
-
-    if (params.targetDir == null) {
-        throw new Error(`The parameter ${chalk.underline('"Target Folder"')} is required`);
-    } else {
-        display.print(`→ The parameter ${chalk.underline('"Target Folder"')} is setled.`);
-    }
-
-    display.showSeparator();
     display.print('Checking folder...');
 
-    let totalSize = new Byte(0);
+    let initialSize = new Byte(0);
     const files = await File.fromFolder(params.targetDir, {
         extensions: params.extensions,
         every(file) {
-            totalSize = totalSize.add(file.size);
+            initialSize = initialSize.add(file.size);
         },
     });
 
-    display.print(p => {
-        const totalSizeString = totalSize.toString({
-            units: [ Byte.giga, Byte.mega, Byte.kilo ],
-            decimals: 2
-        });
-
-        return `Total size: ${p.primitive(totalSizeString)}`
-    });
-
+    display.print('Sorting and filtering files...');
+    let finalSize = new Byte(initialSize.valueOf());
     const filteredFiles = files
         .sort((a, b) =>
             a.birthDate.getTime() -
             b.birthDate.getTime()
         )
         .filter(x => {
-            if (params.sizeLimit!.lessThan(totalSize)) {
-                totalSize = totalSize.minus(x.size);
+            if (params.sizeLimit!.lessThan(finalSize)) {
+                finalSize = finalSize.minus(x.size);
                 return true;
             } else {
                 return false;
             }
         });
+
+    if (filteredFiles.length > 0) {
+        display.showCompleted();
+        display.showSeparator();
+        display.print(p => params.execute
+            ?   p.subtitle(`Deleting files:`)
+            :   p.subtitle(`Selected files:`)
+        );
+    }
 
     for (const file of filteredFiles) {
         display.print(p => {
@@ -80,18 +65,46 @@ try {
         });
 
         if (params.execute) {
-            await file.kill();
+            await file.kill(true);
         }
     }
 
+    if (filteredFiles.length > 0) {
+        display.print('');
+    }
+
     display.print(p => {
-        const totalSizeString = totalSize.toString({
+        const totalSizeString = initialSize.toString({
             units: [ Byte.giga, Byte.mega, Byte.kilo ],
             decimals: 2
         });
 
-        return `Total size: ${p.primitive(totalSizeString)}`
+        const separator = ''.padEnd(10 - totalSizeString.length, ' ');
+        return `Initial target folder size → ${separator}${p.primitive(totalSizeString)}`;
     });
+
+    if (filteredFiles.length > 0) {
+        display.print(p => {
+            const totalSizeString = finalSize.toString({
+                units: [ Byte.giga, Byte.mega, Byte.kilo ],
+                decimals: 2
+            });
+    
+            const separator = ''.padEnd(10 - totalSizeString.length, ' ');
+            return `Final target folder size   → ${separator}${p.primitive(totalSizeString)}`;
+        });
+        
+        if (params.execute) {
+            display.showCompleted();
+        }
+    }
+    
+    if (
+        (!params.execute) ||
+        ( params.execute && filteredFiles.length === 0)
+    ) {
+        display.print(p => p.flag('None files has been deleted'));
+    }
 
 } catch (err) {
     display.print('');
