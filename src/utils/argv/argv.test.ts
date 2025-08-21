@@ -1,7 +1,9 @@
-import test from 'ava';
+import { assertEquals } from '@std/assert';
+import process from 'node:process';
+
 import { Argv } from './argv.ts';
 
-test('Check "hello world"', t => {
+Deno.test('Check "hello world"', () => {
     const argv = new Argv({
         process: {
             argv: [
@@ -13,11 +15,11 @@ test('Check "hello world"', t => {
         }
     });
 
-    t.deepEqual(argv.main, [ 'hello', 'world' ]);
-    t.deepEqual(argv.flags, { });
+    assertEquals(argv.main, [ 'hello', 'world' ]);
+    assertEquals(argv.flags, { });
 });
 
-test('Check "hello world --foo bar --nya yes"', t => {
+Deno.test('Check "hello world --foo bar --nya yes"', () => {
     const argv = new Argv({
         process: {
             argv: [
@@ -33,14 +35,14 @@ test('Check "hello world --foo bar --nya yes"', t => {
         }
     });
 
-    t.deepEqual(argv.main, [ 'hello', 'world' ]);
-    t.deepEqual(argv.flags, {
+    assertEquals(argv.main, [ 'hello', 'world' ]);
+    assertEquals(argv.flags, {
         '--foo': [ 'bar' ],
         '--nya': [ 'yes' ]
     });
 });
 
-test('Check "hello world --foo bar --nya yes ñeee joder -nyaa no!"', t => {
+Deno.test('Check "hello world --foo bar --nya yes ñeee joder -nyaa no!"', () => {
     const argv = new Argv({
         process: {
             argv: [
@@ -60,14 +62,14 @@ test('Check "hello world --foo bar --nya yes ñeee joder -nyaa no!"', t => {
         }
     });
 
-    t.deepEqual(argv.main, [ 'hello', 'world', 'ñeee', 'joder' ]);
-    t.deepEqual(argv.flags, {
+    assertEquals(argv.main, [ 'hello', 'world', 'ñeee', 'joder' ]);
+    assertEquals(argv.flags, {
         '--foo': [ 'bar' ],
         '--nya': [ 'yes', 'no!' ]
     });
 });
 
-test('Check "hello world --foo bar --nya=yes ñeee joder -nyaa no!"', t => {
+Deno.test('Check "hello world --foo bar --nya=yes ñeee joder -nyaa no!"', () => {
     const argv = new Argv({
         process: {
             argv: [
@@ -86,14 +88,14 @@ test('Check "hello world --foo bar --nya=yes ñeee joder -nyaa no!"', t => {
         }
     });
 
-    t.deepEqual(argv.main, [ 'hello', 'world', 'ñeee', 'joder' ]);
-    t.deepEqual(argv.flags, {
+    assertEquals(argv.main, [ 'hello', 'world', 'ñeee', 'joder' ]);
+    assertEquals(argv.flags, {
         '--foo': [ 'bar' ],
         '--nya': [ 'yes', 'no!' ]
     });
 });
 
-test('Check "hello world -- --foo bar --nya yes ñeee joder -nyaa no!"', t => {
+Deno.test('Check "hello world -- --foo bar --nya yes ñeee joder -nyaa no!"', () => {
     const argv = new Argv({
         process: {
             argv: [
@@ -114,8 +116,8 @@ test('Check "hello world -- --foo bar --nya yes ñeee joder -nyaa no!"', t => {
         }
     });
 
-    t.deepEqual(argv.main, [ 'hello', 'world' ]);
-    t.deepEqual(argv.flags, {
+    assertEquals(argv.main, [ 'hello', 'world' ]);
+    assertEquals(argv.flags, {
         '--': [
             '--foo', 'bar', '--nya', 'yes',
             'ñeee', 'joder', '--nya', 'no!'

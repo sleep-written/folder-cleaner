@@ -1,59 +1,60 @@
-import test from 'ava';
+import { assertEquals, assertThrows } from '@std/assert';
+
 import { Byte } from './byte.ts';
 
-test('From 5 GB to 5000 MB', t => {
+Deno.test('From 5 GB to 5000 MB', () => {
     const giga = new Byte(5, Byte.giga);
     const mega = giga.valueOf(Byte.mega);
 
-    t.is(mega.toNumber(), 5000);
-    t.is(giga.toString(), '5000000000 B');
-    t.is(giga.toString({ units: Byte.mega }), '5000 MB');
-    t.is(giga.toString({ units: Byte.giga }), '5 GB');
-    t.is(giga.toString({ units: Byte.giga, decimals: 2 }), '5.00 GB');
+    assertEquals(mega.toNumber(), 5000);
+    assertEquals(giga.toString(), '5000000000 B');
+    assertEquals(giga.toString({ units: Byte.mega }), '5000 MB');
+    assertEquals(giga.toString({ units: Byte.giga }), '5 GB');
+    assertEquals(giga.toString({ units: Byte.giga, decimals: 2 }), '5.00 GB');
 });
 
-test('From 5000 MB to 5 GB', t => {
+Deno.test('From 5000 MB to 5 GB', () => {
     const mega = new Byte(5000, Byte.mega);
     const giga = mega.valueOf(Byte.giga);
 
-    t.is(giga.toNumber(), 5);
-    t.is(mega.toString(), '5000000000 B');
-    t.is(mega.toString({ units: Byte.mega }), '5000 MB');
-    t.is(mega.toString({ units: Byte.giga }), '5 GB');
-    t.is(mega.toString({ units: Byte.giga, decimals: 2 }), '5.00 GB');
+    assertEquals(giga.toNumber(), 5);
+    assertEquals(mega.toString(), '5000000000 B');
+    assertEquals(mega.toString({ units: Byte.mega }), '5000 MB');
+    assertEquals(mega.toString({ units: Byte.giga }), '5 GB');
+    assertEquals(mega.toString({ units: Byte.giga, decimals: 2 }), '5.00 GB');
 });
 
-test('From 2.5 GiB to 2560 MiB', t => {
+Deno.test('From 2.5 GiB to 2560 MiB', () => {
     const gib = new Byte(2.5, Byte.gibi);
     const mib = gib.valueOf(Byte.mebi);
 
-    t.is(mib.toNumber(), 2560);
-    t.is(gib.toString(), '2684354560 B');
-    t.is(gib.toString({ units: Byte.mebi }), '2560 MiB');
-    t.is(gib.toString({ units: Byte.gibi }), '2.5 GiB');
-    t.is(gib.toString({ units: Byte.gibi, decimals: 2 }), '2.50 GiB');
+    assertEquals(mib.toNumber(), 2560);
+    assertEquals(gib.toString(), '2684354560 B');
+    assertEquals(gib.toString({ units: Byte.mebi }), '2560 MiB');
+    assertEquals(gib.toString({ units: Byte.gibi }), '2.5 GiB');
+    assertEquals(gib.toString({ units: Byte.gibi, decimals: 2 }), '2.50 GiB');
 });
 
-test('From 2560 MiB to 2.5 GiB', t => {
+Deno.test('From 2560 MiB to 2.5 GiB', () => {
     const mib = new Byte(2560, Byte.mebi);
     const gib = mib.valueOf(Byte.gibi);
 
-    t.is(gib.toNumber(), 2.5);
-    t.is(mib.toString(), '2684354560 B');
-    t.is(mib.toString({ units: Byte.mebi }), '2560 MiB');
-    t.is(mib.toString({ units: Byte.gibi }), '2.5 GiB');
-    t.is(mib.toString({ units: Byte.gibi, decimals: 2 }), '2.50 GiB');
+    assertEquals(gib.toNumber(), 2.5);
+    assertEquals(mib.toString(), '2684354560 B');
+    assertEquals(mib.toString({ units: Byte.mebi }), '2560 MiB');
+    assertEquals(mib.toString({ units: Byte.gibi }), '2.5 GiB');
+    assertEquals(mib.toString({ units: Byte.gibi, decimals: 2 }), '2.50 GiB');
 });
 
-test('Parse "2.5GiB"', t => {
+Deno.test('Parse "2.5GiB"', () => {
     const byte = Byte.parse('2.5GiB');
-    t.is(byte.valueOf().toNumber(), 2684354560);
+    assertEquals(byte.valueOf().toNumber(), 2684354560);
 });
 
-test('"2560MiB" toString → "2.50 GiB" [ Byte.gibi, Byte.mebi, Byte.kibi ]', t => {
+Deno.test('"2560MiB" toString → "2.50 GiB" [ Byte.gibi, Byte.mebi, Byte.kibi ]', () => {
     const byte = Byte.parse('2560MiB');
-    t.is(byte.valueOf().toNumber(), 2684354560);
-    t.is(
+    assertEquals(byte.valueOf().toNumber(), 2684354560);
+    assertEquals(
         byte.toString({
             units: [ Byte.gibi, Byte.mebi, Byte.kibi ],
             decimals: 2
@@ -62,10 +63,10 @@ test('"2560MiB" toString → "2.50 GiB" [ Byte.gibi, Byte.mebi, Byte.kibi ]', t 
     );
 });
 
-test('"2560MiB" toString → "2.50 GiB" [ Byte.kibi, Byte.mebi, Byte.gibi ]', t => {
+Deno.test('"2560MiB" toString → "2.50 GiB" [ Byte.kibi, Byte.mebi, Byte.gibi ]', () => {
     const byte = Byte.parse('2560MiB');
-    t.is(byte.valueOf().toNumber(), 2684354560);
-    t.is(
+    assertEquals(byte.valueOf().toNumber(), 2684354560);
+    assertEquals(
         byte.toString({
             units: [ Byte.kibi, Byte.mebi, Byte.gibi ],
             decimals: 2
@@ -74,10 +75,10 @@ test('"2560MiB" toString → "2.50 GiB" [ Byte.kibi, Byte.mebi, Byte.gibi ]', t 
     );
 });
 
-test('"2560MiB" toString → "2.50 GiB" [ Byte.gibi, Byte.kibi, Byte.mebi ]', t => {
+Deno.test('"2560MiB" toString → "2.50 GiB" [ Byte.gibi, Byte.kibi, Byte.mebi ]', () => {
     const byte = Byte.parse('2560MiB');
-    t.is(byte.valueOf().toNumber(), 2684354560);
-    t.is(
+    assertEquals(byte.valueOf().toNumber(), 2684354560);
+    assertEquals(
         byte.toString({
             units: [ Byte.gibi, Byte.kibi, Byte.mebi ],
             decimals: 2
@@ -86,71 +87,65 @@ test('"2560MiB" toString → "2.50 GiB" [ Byte.gibi, Byte.kibi, Byte.mebi ]', t 
     );
 });
 
-test('Parse "2.5 GiB"', t => {
+Deno.test('Parse "2.5 GiB"', () => {
     const byte = Byte.parse('2.5 GiB');
-    t.is(byte.valueOf().toNumber(), 2684354560);
+    assertEquals(byte.valueOf().toNumber(), 2684354560);
 });
 
-test('Parse "2560 MiB"', t => {
+Deno.test('Parse "2560 MiB"', () => {
     const byte = Byte.parse('2560 MiB');
-    t.is(byte.valueOf().toNumber(), 2684354560);
+    assertEquals(byte.valueOf().toNumber(), 2684354560);
 });
 
-test('Parse "2.5 gib" (ignoreCase = true)', t => {
+Deno.test('Parse "2.5 gib" (ignoreCase = true)', () => {
     const byte = Byte.parse('2.5 gib', true);
-    t.is(byte.valueOf().toNumber(), 2684354560);
+    assertEquals(byte.valueOf().toNumber(), 2684354560);
 });
 
-test('Parse "2560 mib" (ignoreCase = true)', t => {
+Deno.test('Parse "2560 mib" (ignoreCase = true)', () => {
     const byte = Byte.parse('2560 mib', true);
-    t.is(byte.valueOf().toNumber(), 2684354560);
+    assertEquals(byte.valueOf().toNumber(), 2684354560);
 });
 
-test('Parse "2.5 gib" and fails (ignoreCase = false)', t => {
-    t.throws(
+Deno.test('Parse "2.5 gib" and fails (ignoreCase = false)', () => {
+    assertThrows(
         () => Byte.parse('2.5 gib'),
-        {
-            message: 'The suffix "gib" is invalid'
-        }
+        'The suffix "gib" is invalid'
     );
 });
 
-test('Parse "2560 mib" and fails (ignoreCase = false)', t => {
-    t.throws(
+Deno.test('Parse "2560 mib" and fails (ignoreCase = false)', () => {
+    assertThrows(
         () => Byte.parse('2560 mib'),
-        {
-            message: 'The suffix "mib" is invalid'
-        }
+        'The suffix "mib" is invalid'
     );
 });
 
-test('Parse "5GB 🍆" and fails', t => {
-    t.throws(
+Deno.test('Parse "5GB 🍆" and fails', () => {
+    assertThrows(
         () => Byte.parse('5GB 🍆'),
-        {
-            message: `The string "5GB 🍆" cannot be parsed into a \`Byte\` instance`
-        }
+        `The string "5GB 🍆" cannot be parsed into a \`Byte\` instance`
     );
 });
 
-test('5B + 3B = 8B', t => {
+Deno.test('5B + 3B = 8B', () => {
     const a = new Byte(5);
     const b = new Byte(3);
     const r = a.add(b);
-    t.is(r.valueOf().toNumber(), 8);
+    assertEquals(r.valueOf().toNumber(), 8);
 });
 
-test('5B - 3B = 2B', t => {
+Deno.test('5B - 3B = 2B', () => {
     const a = new Byte(5);
     const b = new Byte(3);
     const r = a.minus(b);
-    t.is(r.valueOf().toNumber(), 2);
+    assertEquals(r.valueOf().toNumber(), 2);
 });
 
-test('5B - 1B - 2B = 2B', t => {
+Deno.test('5B - 1B - 2B = 2B', () => {
     const a = new Byte(5);
     const b = new Byte(1);
     const c = new Byte(2);
     const r = a.minus(b, c);
-    t.is(r.valueOf().toNumber(), 2);
+    assertEquals(r.valueOf().toNumber(), 2);
 });

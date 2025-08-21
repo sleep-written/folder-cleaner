@@ -1,9 +1,9 @@
 import type { Dirent, FileFromFolderInjector, Stats } from './interfaces/index.ts';
 
+import { assertEquals } from '@std/assert';
 import { File } from './file.ts';
-import test from 'ava';
 
-test('Get current folder', async t => {
+Deno.test('Get current folder', async () => {
     const inject: FileFromFolderInjector = {
         readdir: () => Promise.resolve<Dirent[]>([
             {
@@ -86,15 +86,15 @@ test('Get current folder', async t => {
 
     const [ file1, file2, file3 ] = await File.fromFolder('./src', undefined, inject);
 
-    t.is(file1.path, '/path/to/project/pendejo.ts');
-    t.is(file1.size.toString(), '2048 B');
-    t.deepEqual(file1.birthDate, new Date(2025, 8, 1));
+    assertEquals(file1.path, '/path/to/project/pendejo.ts');
+    assertEquals(file1.size.toString(), '2048 B');
+    assertEquals(file1.birthDate, new Date(2025, 8, 1));
 
-    t.is(file2.path, '/path/to/project/joder.ts');
-    t.is(file2.size.toString(), '3516 B');
-    t.deepEqual(file2.birthDate, new Date(2025, 8, 2));
+    assertEquals(file2.path, '/path/to/project/joder.ts');
+    assertEquals(file2.size.toString(), '3516 B');
+    assertEquals(file2.birthDate, new Date(2025, 8, 2));
 
-    t.is(file3.path, '/path/to/project/chaval.ts');
-    t.is(file3.size.toString(), '4444 B');
-    t.deepEqual(file3.birthDate, new Date(2025, 8, 3));
+    assertEquals(file3.path, '/path/to/project/chaval.ts');
+    assertEquals(file3.size.toString(), '4444 B');
+    assertEquals(file3.birthDate, new Date(2025, 8, 3));
 });

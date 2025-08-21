@@ -1,10 +1,10 @@
 import type { ArgvObject } from './program-params.ts';
 
 import { ProgramParams } from './program-params.ts';
+import { assertEquals,  } from '@std/assert';
 import { Byte } from '../byte/byte.ts';
-import test from 'ava';
 
-test('Capture "--limit 8MB" → OK', t => {
+Deno.test('Capture "--limit 8MB" → OK', () => {
     const argv: ArgvObject = {
         main: [],
         flags: {
@@ -13,13 +13,13 @@ test('Capture "--limit 8MB" → OK', t => {
     };
 
     const parser = new ProgramParams(argv);
-    t.is(
+    assertEquals(
         parser.sizeLimit?.toString({ units: Byte.mega }),
         '8 MB'
     );
 });
 
-test('Capture "--joder 8MB" → FAIL', t => {
+Deno.test('Capture "--joder 8MB" → FAIL', () => {
     const argv: ArgvObject = {
         main: [],
         flags: {
@@ -28,10 +28,10 @@ test('Capture "--joder 8MB" → FAIL', t => {
     };
 
     const parser = new ProgramParams(argv);
-    t.is(parser.sizeLimit, null);
+    assertEquals(parser.sizeLimit, null);
 });
 
-test('Capture "--ext js,cjs,mjs"', t => {
+Deno.test('Capture "--ext js,cjs,mjs"', () => {
     const argv: ArgvObject = {
         main: [],
         flags: {
@@ -40,10 +40,10 @@ test('Capture "--ext js,cjs,mjs"', t => {
     };
 
     const parser = new ProgramParams(argv);
-    t.deepEqual(parser.extensions, [ 'js', 'cjs', 'mjs' ]);
+    assertEquals(parser.extensions, [ 'js', 'cjs', 'mjs' ]);
 });
 
-test('Capture "--execute" → true', t => {
+Deno.test('Capture "--execute" → true', () => {
     const argv: ArgvObject = {
         main: [],
         flags: {
@@ -52,10 +52,10 @@ test('Capture "--execute" → true', t => {
     };
 
     const parser = new ProgramParams(argv);
-    t.true(parser.execute);
+    assertEquals(parser.execute, true);
 });
 
-test('Capture "--execute" → false', t => {
+Deno.test('Capture "--execute" → false', () => {
     const argv: ArgvObject = {
         main: [],
         flags: {
@@ -64,5 +64,5 @@ test('Capture "--execute" → false', t => {
     };
 
     const parser = new ProgramParams(argv);
-    t.false(parser.execute);
+    assertEquals(parser.execute, false);
 });

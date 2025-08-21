@@ -1,7 +1,7 @@
-import test from 'ava';
 import { CachedValue } from './cached-value.ts';
+import { assertEquals } from '@std/assert';
 
-test('Get calc result 5 times, execute once', t => {
+Deno.test('Get calc result 5 times, execute once', () => {
     let count = 0;
     const cachedValue = new CachedValue(() => {
         count++;
@@ -14,6 +14,6 @@ test('Get calc result 5 times, execute once', t => {
     value = cachedValue.get();
     value = cachedValue.get();
 
-    t.is(value, 40);
-    t.is(count, 1);
+    assertEquals(value, 40);
+    assertEquals(count, 1);
 });
