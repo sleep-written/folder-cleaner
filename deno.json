@@ -1,4 +1,7 @@
 {
+    "compilerOptions": {
+        "verbatimModuleSyntax": true
+    },
     "imports": {
         "@std/assert": "jsr:@std/assert@^1.0.14",
         "@utils/": "./src/utils/",
