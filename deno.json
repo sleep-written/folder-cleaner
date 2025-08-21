@@ -14,8 +14,8 @@
     },
     "tasks": {
         "install": "deno install --allow-scripts=npm:@swc/core",
-        "start": "deno run --allow-read --allow-write --allow-env ./src/index.ts",
-        "build": "deno compile --allow-read --allow-write --allow-env -o folder-cleaner ./src/index.ts"
+        "execute": "deno run --allow-read --allow-write --allow-env ./src/index.ts",
+        "compile": "deno compile --allow-read --allow-write --allow-env -o folder-cleaner ./src/index.ts"
     },
     "test": {
         "include": [ "./src/**/*.test.ts" ]
